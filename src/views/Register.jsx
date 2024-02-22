@@ -9,6 +9,8 @@ import _ from 'lodash';
 import { addDoc, setDoc, collection, doc } from 'firebase/firestore';
 import { database } from '../../firebaseConfig.js';
 import { colors } from '../../generalColors.js';
+import { playSound } from '../utils/tapSound.jsx';
+
 
 export default function Register({ navigation }) {
 
@@ -16,14 +18,8 @@ export default function Register({ navigation }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-
-    // const onSend = useCallback((messages = []) => {
-    //     const { _id, createdAt, text, user } = messages[0];
-    //     addDoc(collection(database, 'users'), { _id, text, user, createdAt, });
-    // }, []);
-
-
     const handleRegister = async () => {
+        playSound();
         if (email !== '' && password !== '') {
             createUserWithEmailAndPassword(auth, email, password)
                 .then(() => {
@@ -35,15 +31,22 @@ export default function Register({ navigation }) {
                     console.log('Register sucessful!', auth.currentUser);
                     Alert.alert('Register sucessful!', username);
                 })
+
                 .catch((err) => Alert.alert("Error at register:", err.message));
+
+            const user = auth.currentUser;
+            await updateProfile(user, {
+                displayName: username,
+            });
         }
     };
 
+
     return (
         <View style={styles.container}>
-            {/* <Image source={backImage} style={styles.backImage} /> */}
-            <View style={styles.whiteSheet} />
+            <StatusBar barStyle="light-content" />
             <SafeAreaView style={styles.form}>
+                <Image style={styles.logo} source={require('../../assets/icon.png')} />
                 <Text style={styles.title}>Register</Text>
                 <TextInput
                     style={styles.input}
@@ -72,21 +75,31 @@ export default function Register({ navigation }) {
                     value={password}
                     onChangeText={(text) => setPassword(text)}
                 />
+
                 <TouchableOpacity style={styles.button} onPress={handleRegister}>
                     <Text style={{ fontWeight: 'bold', color: '#fff', fontSize: 18 }}> Register</Text>
                 </TouchableOpacity>
                 <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'center' }}>
                     <Text style={{ color: 'gray', fontWeight: '600', fontSize: 14 }}>Do you have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                    <TouchableOpacity onPress={() => {
+                        playSound();
+                        navigation.navigate("Login")
+                    }}>
                         <Text style={styles.linkDown}> Log In</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            <StatusBar barStyle="light-content" />
         </View>
     );
 }
 const styles = StyleSheet.create({
+    logo: {
+        width: 100,
+        height: 100,
+        alignSelf: 'center',
+        resizeMode: 'contain',
+
+    },
     buttonText: {
         fontWeight: 'bold',
         color: '#fff',
@@ -109,18 +122,12 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     input: {
-        backgroundColor: "#F6F7FB",
+        backgroundColor: colors.inputBackground,
         height: 58,
         marginBottom: 20,
         fontSize: 16,
         borderRadius: 10,
         padding: 12,
-    },
-    whiteSheet: {
-        width: '100%',
-        height: '75%',
-        position: "absolute",
-        backgroundColor: '#fff',
     },
     form: {
         flex: 1,

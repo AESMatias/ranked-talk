@@ -10,10 +10,13 @@ import Login from './src/views/Login.jsx';
 import Register from './src/views/Register.jsx';
 import Chat from './src/views/Chat.jsx';
 import Home from './src/views/Home.jsx';
-
+import { MyAccount } from './src/views/MyAccount.jsx';
+import DrawerGroup from './src/views/Drawer.jsx';
+import { setUser } from './src/store/slices/AccountSlice.jsx'
+import { useDispatch, useSelector } from 'react-redux';
 
 const Stack = createStackNavigator();
-const UserContext = createContext({});
+export const UserContext = createContext({});
 
 
 // WebBrowser.maybeCompleteAuthSession();
@@ -39,6 +42,7 @@ function ChatStack() {
     <Stack.Navigator defaultScreenOptions={Home}>
       <Stack.Screen name='Home' component={Home} />
       <Stack.Screen name='Chat' component={Chat} />
+      <Stack.Screen name='My Account' component={MyAccount} />
     </Stack.Navigator>
   );
 }
@@ -56,13 +60,14 @@ function RootNavigator() {
 
   const { user, setUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async authenticatedUser => {
       authenticatedUser ? setUser(authenticatedUser) : setUser(null);
       setIsLoading(false);
     });
+    // useDispatch(setUser(user));
     return unsubscribeAuth;
   }, [user]);
 
@@ -76,6 +81,7 @@ function RootNavigator() {
 
   return (
     <NavigationContainer>
+      {/* <DrawerGroup /> */}
       {user ? <ChatStack /> : <AuthStack />}
     </NavigationContainer>
   );

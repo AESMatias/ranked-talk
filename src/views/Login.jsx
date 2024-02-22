@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput, Image, SafeAreaView, Touchab
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig.js";
 import { colors } from '../../generalColors.js';
+import { playSound } from "../utils/tapSound.jsx";
 // const backImage = require("../assets/backImage.png");
 
 export default function Login({ navigation }) {
@@ -11,6 +12,7 @@ export default function Login({ navigation }) {
     const [password, setPassword] = useState("");
 
     const onHandleLogin = () => {
+        playSound();
         if (email !== "" && password !== "") {
             signInWithEmailAndPassword(auth, email, password)
                 .then(() => console.log("Login success"))
@@ -20,9 +22,9 @@ export default function Login({ navigation }) {
 
     return (
         <View style={styles.container}>
-            {/* <Image source={backImage} style={styles.backImage} /> */}
-            <View style={styles.whiteSheet} />
+            <StatusBar barStyle="light-content" />
             <SafeAreaView style={styles.form}>
+                <Image style={styles.logo} source={require('../../assets/icon.png')} />
                 <Text style={styles.title}>Rate Talk App</Text>
                 <TextInput
                     style={styles.input}
@@ -49,16 +51,25 @@ export default function Login({ navigation }) {
                 </TouchableOpacity>
                 <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'center' }}>
                     <Text style={{ color: 'gray', fontWeight: '600', fontSize: 14 }}>Don't you have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                    <TouchableOpacity onPress={() => {
+                        playSound();
+                        navigation.navigate("Register")
+                    }}>
                         <Text style={styles.linkDown}> Register</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
-            <StatusBar barStyle="light-content" />
         </View>
     );
 }
 const styles = StyleSheet.create({
+    logo: {
+        width: 200,
+        height: 200,
+        alignSelf: 'center',
+        resizeMode: 'contain',
+
+    },
     buttonText: {
         fontWeight: 'bold',
         color: '#fff',
@@ -81,18 +92,12 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     input: {
-        backgroundColor: "#F6F7FB",
+        backgroundColor: colors.inputBackground,
         height: 58,
         marginBottom: 20,
         fontSize: 16,
         borderRadius: 10,
         padding: 12,
-    },
-    whiteSheet: {
-        width: '100%',
-        height: '75%',
-        position: "absolute",
-        backgroundColor: '#fff',
     },
     form: {
         flex: 1,

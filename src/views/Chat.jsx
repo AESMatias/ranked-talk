@@ -4,7 +4,7 @@ import React, {
     useLayoutEffect,
     useCallback
 } from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 import { GiftedChat, Bubble, MessageText, Time } from 'react-native-gifted-chat';
 import {
     collection,
@@ -19,6 +19,8 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { doc, getDoc } from 'firebase/firestore';
 import { colors } from '../../generalColors.js';
+import { UserModal } from '../components/UserModal.jsx';
+import { playSound } from '../utils/tapSound.jsx';
 // import { CustomMessage } from '../components/CustomMessage';
 
 
@@ -38,14 +40,16 @@ import { colors } from '../../generalColors.js';
 //     );
 // };
 
-export default function Chat() {
+export default function Chat({ navigation }) {
 
     const [messages, setMessages] = useState([]);
     const [userData, setUserData] = useState(null) // The actual user data
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    [userToSee, setUserToSee] = useState(null);
 
-    const navigation = useNavigation();
 
     useEffect(() => {
+        playSound();
         const fetchUserData = async () => {
             try {
                 const userDocRef = doc(database, "users", auth.currentUser.uid);
@@ -60,7 +64,6 @@ export default function Chat() {
                 console.error("Error obtaining the data user at Chat.jsx", error.message);
             }
         };
-
         fetchUserData();
     }, []);
 
@@ -69,10 +72,15 @@ export default function Chat() {
         navigation.setOptions({
             headerTitleAlign: 'center',
             headerStyle: {
-                backgroundColor: colors.lightGray,
+                backgroundColor: colors.background,
+                borderBottomWidth: 1,
+                borderBottomColor: 'white',
             },
-            headerTitle: `Chat ${userData ? `- ${userData?.username}` : ''}`
+            headerTitle: `Chat ${userData ? `- ${userData?.username}` : ''}`,
+            headerTintColor: 'white',
+            headerTitleAlign: 'center'
         });
+
     }, [navigation]);
 
     useLayoutEffect(() => {
@@ -100,33 +108,66 @@ export default function Chat() {
             GiftedChat.append(previousMessages, messages)
         );
         const { _id, createdAt, text, user } = messages[0];
-        addDoc(collection(database, 'chat'), { _id, text, user, createdAt, });
-    }, []);
+        const modifiedUser = {
+            ...user,
+            _id: auth?.currentUser?.uid,
+        };
+        // We send the user without the email, for security reasons
+        addDoc(collection(database, 'chat'), { _id, text, user: modifiedUser, createdAt, });
+    }, [])
+
+
 
     return (
-        <GiftedChat
-            messages={messages}
-            showUserAvatar={true}
-            onSend={messages => sendMessage(messages)}
-            messagesContainerStyle={{
-                backgroundColor: colors.background,
-            }}
-            textInputStyle={{
-                backgroundColor: 'rgba(0,0,0,0)',
-                paddingHorizontal: 5,
-                marginRight: 10
-            }}
-            user={{
-                _id: auth?.currentUser?.email, //TODO: Change this to the user UID
-                //TODO: and configure the permissions to only allow the user to send messages
-                avatar: 'https://avatars.githubusercontent.com/u/119653204?v=4',
-                username: userData?.username,
-            }}
-            isLoadingEarlier={true}
-            onPressAvatar={user => console.log(user)}
-            onLongPress={() => console.log('long press')}
-            renderUsernameOnMessage={true}
-        // renderMessage={messageProps => <CustomMessage {...messageProps} />}
-        />
+        isModalOpen ? (
+            <UserModal
+                id='modal_id'
+                isModalOpen={isModalOpen}
+                withInput
+                onRequestClose={() => setIsModalOpen(false)}
+                userData={userData}
+                userToSee={userToSee}
+            />
+        ) : (
+            messages.length > -1 ? ( //TODO: Explain -1
+                <GiftedChat
+                    messages={messages}
+                    showUserAvatar={true}
+                    onSend={messages => sendMessage(messages)}
+                    messagesContainerStyle={{
+                        backgroundColor: colors.backgroundDense,
+                    }}
+                    textInputStyle={{
+                        backgroundColor: 'rgba(0,0,0,0)',
+                        paddingHorizontal: 5,
+                        marginRight: 10
+                    }}
+                    user={{
+                        _id: auth?.currentUser?.uid,
+                        avatar: auth?.currentUser?.photoURL,
+                        username: userData?.username,
+                    }}
+                    isLoadingEarlier={true}
+                    onPressAvatar={(user) => {
+                        playSound();
+                        setIsModalOpen(true);
+                        setUserToSee(user);
+                        console.log('message', user)
+                    }}
+                    onLongPress={(context, message) => {
+                        console.log('User Info:', message.user);
+                    }}
+                    onPress={() => console.log('Message pressed')}
+                // renderUsernameOnMessage={true} TODO: Fix the username rendering
+                />
+            ) : (
+                <View style={{ backgroundColor: colors.background, flex: 1, justifyContent: 'center' }}>
+                    <ActivityIndicator size={100} color="#ffffff" />
+                    <Text style={{ textAlign: 'center', fontWeight: '400', fontSize: 18, color: 'white', marginTop: 10 }}>
+                        Loading messages...
+                    </Text>
+                </View>
+            )
+        )
     );
 }

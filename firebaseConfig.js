@@ -7,9 +7,9 @@ import { Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from "firebase/storage";
 import * as WebBrowser from 'expo-web-browser';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-
 //TODO: To create the apk> eas build -p android --profile preview
 
 export const firebaseConfig = {
@@ -24,8 +24,9 @@ export const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const database = getFirestore(app);
+export const storage = getStorage();
 
-WebBrowser.maybeCompleteAuthSession();
+// WebBrowser.maybeCompleteAuthSession();
 
 
 export const auth = initializeAuth(app, {
