@@ -26,7 +26,7 @@ export const UserContext = createContext({});
 //   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 // });
 
-const UserProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
 
@@ -36,6 +36,7 @@ const UserProvider = ({ children }) => {
     </UserContext.Provider>
   );
 };
+
 
 function ChatStack() {
   return (

@@ -19,9 +19,11 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { doc, getDoc } from 'firebase/firestore';
 import { colors } from '../../generalColors.js';
-import { UserModal } from '../components/UserModal.jsx';
+import UserModal from '../components/UserModal.jsx';
 import { playSound } from '../utils/tapSound.jsx';
 // import { CustomMessage } from '../components/CustomMessage';
+import { useContext } from 'react';
+import { UserContext } from '../../App.js';
 
 
 // export const CustomMessage = ({ currentMessage }) => {
@@ -46,7 +48,7 @@ export default function Chat({ navigation }) {
     const [userData, setUserData] = useState(null) // The actual user data
     const [isModalOpen, setIsModalOpen] = useState(false);
     [userToSee, setUserToSee] = useState(null);
-
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         playSound();
@@ -65,6 +67,7 @@ export default function Chat({ navigation }) {
             }
         };
         fetchUserData();
+        console.warn('User data:', user)
     }, []);
 
 
@@ -84,22 +87,26 @@ export default function Chat({ navigation }) {
     }, [navigation]);
 
     useLayoutEffect(() => {
-
         const collectionRef = collection(database, 'chat');
         const q = query(collectionRef, orderBy('createdAt', 'desc'));
 
         const unsubscribe = onSnapshot(q, querySnapshot => {
-            // console.log('Snapshot updated: ', querySnapshot.docs[0].data());
             setMessages(
-                querySnapshot.docs.map(doc => ({
-                    _id: doc.data()._id,
-                    createdAt: doc.data().createdAt.toDate(),
-                    //TODO: Conditional rendering here, only if the user is the same as the current user
-                    text: `${doc.data().user.username}:\n${doc.data().text}`,
-                    user: doc.data().user,
-                }))
+                querySnapshot.docs.map(doc => {
+                    const message = {
+                        _id: doc.data()._id,
+                        createdAt: doc.data().createdAt.toDate(),
+                        text: `${doc.data().user.username}:\n${doc.data().text}`,
+                        user: doc.data().user,
+                    };
+
+                    console.log('Mapped Message:', user); // Agrega este console.log() para imprimir cada mensaje mapeado
+
+                    return message;
+                })
             );
         });
+
         return unsubscribe;
     }, []);
 
@@ -111,6 +118,7 @@ export default function Chat({ navigation }) {
         const modifiedUser = {
             ...user,
             _id: auth?.currentUser?.uid,
+            avatar: auth?.currentUser?.photoURL,
         };
         // We send the user without the email, for security reasons
         addDoc(collection(database, 'chat'), { _id, text, user: modifiedUser, createdAt, });

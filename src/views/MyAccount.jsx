@@ -18,14 +18,18 @@ import { playSound } from '../utils/tapSound.jsx';
 export const MyAccount = ({ navigation }) => {
 
     const [imageState, setImageState] = useState(null);
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
+
+
     // console.error('User: ', user);
     useEffect(() => {
         // Once the component is mounted, the image is downloaded
         // from the firebase Storage
         playSound();
         downloadImage();
+
     }, []);
+
 
     const selectImage = async () => {
         const image = await ImagePicker.launchImageLibraryAsync({
@@ -38,18 +42,19 @@ export const MyAccount = ({ navigation }) => {
         if (!image.cancelled) {
             returnedImage = await uploadImage(image.assets[0].uri);
             setImageState(image.assets[0].uri);
-            changePhotoURL(image.assets[0].uri);
+            // changePhotoURL(image.assets[0].uri);
         }
     }
 
     const changePhotoURL = async (urlNewImage) => {
-        const user = auth.currentUser;
+        const userAuth = auth.currentUser;
         try {
             const newPhotoURL = urlNewImage;
-            await updateProfile(user, {
+            await updateProfile(userAuth, {
                 photoURL: newPhotoURL,
             });
-            console.log('Photo URL updated successfully:', urlNewImage);
+            // console.log("newuser", user);
+            // console.log('Photo URL updated successfully:', urlNewImage);
         } catch (error) {
             console.error('Error updating photo URL:', error);
         }
@@ -89,7 +94,9 @@ export const MyAccount = ({ navigation }) => {
         const storageRef = ref(storage, `users/${auth.currentUser.uid}/profileImage.jpg`);
         const url = await getDownloadURL(storageRef);
         setImageState(url);
-        console.log(url);
+        // console.log("URL RIGHT", url);
+        changePhotoURL(url); // Change the photoURL in firestone
+        return url;
     }
 
     const [userData, setUserData] = useState(null) // The actual user data

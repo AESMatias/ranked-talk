@@ -4,12 +4,18 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5 } from '@expo/vector-icons';;
 import { colors } from '../../generalColors.js';
 import { Entypo } from '@expo/vector-icons';
-import { auth } from '../../firebaseConfig.js';
+import { auth, storage } from '../../firebaseConfig.js';
 import { signOut } from 'firebase/auth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { UserContext } from '../../App.js';
+import { getDownloadURL, ref, uploadBytesResumable, uploadBytes } from 'firebase/storage';
+import { useContext } from 'react';
 
 const Home = ({ ...props }) => {
+
+
+    const { user, setUser } = useContext(UserContext);
 
     const navigation = useNavigation();
 
@@ -18,6 +24,9 @@ const Home = ({ ...props }) => {
     };
 
     useEffect(() => {
+
+        // downloadImage();
+
         navigation.setOptions({
             headerStyle: {
                 backgroundColor: colors.primary,

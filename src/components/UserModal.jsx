@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import {
     Modal as RNModal, KeyboardAvoidingView,
     View, Text, StyleSheet, TouchableOpacity, Button,
@@ -40,7 +40,7 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
 
             {children}
             <Text style={styles.text}>
-                MODAL WITH CONTENT IN THE MODAL!
+                MODAL WITHOUT CONTENT IN THE MODAL!
             </Text>
         </View>
     );
@@ -109,3 +109,5 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     }
 });
+
+export default memo(UserModal);
