@@ -26,6 +26,7 @@ const Home = ({ ...props }) => {
             },
             headerTintColor: 'white',
             headerTitleAlign: 'center',
+            headerTitle: `RateTalk - Home`,
             headerRight: () => (
                 <TouchableOpacity
                     style={{
@@ -60,11 +61,25 @@ const Home = ({ ...props }) => {
                     style={styles.accountButton} >
                     <MaterialIcons name="account-circle" size={45} color={colors.lightGray} />
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("Estimates")}
+                    style={styles.menuButton} >
+                    <Entypo name="menu" size={30} color={colors.lightGray} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("PDF")}
+                    style={styles.menuButton} >
+                    <Entypo name="star" size={30} color={colors.lightGray} />
+                </TouchableOpacity>
+
                 <TouchableOpacity
                     onPress={() => navigation.navigate("Chat")}
                     style={styles.chatButton} >
                     <Entypo name="chat" size={30} color={colors.lightGray} />
                 </TouchableOpacity>
+
             </View>
 
         </View>
@@ -117,6 +132,17 @@ const styles = StyleSheet.create({
         shadowColor: colors.primary,
         marginRight: 30,
         marginBottom: 50,
+    },
+    menuButton: {
+        backgroundColor: colors.primary,
+        height: 60,
+        width: 60,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: colors.primary,
+        marginRight: 0,
+        marginBottom: 0,
     },
     accountButton: {
         backgroundColor: colors.primary,

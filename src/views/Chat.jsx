@@ -4,7 +4,7 @@ import React, {
     useLayoutEffect,
     useCallback
 } from 'react';
-import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, View, ActivityIndicator, ToastAndroid } from 'react-native';
 import { GiftedChat, Bubble, MessageText, Time } from 'react-native-gifted-chat';
 import {
     collection,
@@ -21,6 +21,20 @@ import { doc, getDoc } from 'firebase/firestore';
 import { colors } from '../../generalColors.js';
 import { UserModal } from '../components/UserModal.jsx';
 import { playSound } from '../utils/tapSound.jsx';
+import { Clipboard } from 'react-native';
+
+
+import {
+    renderAvatar,
+    renderBubble,
+    renderSystemMessage,
+    renderMessage,
+    renderMessageText,
+    renderCustomView,
+  } from './MessageContainer.jsx';
+
+  import { renderInputToolbar, renderActions, renderComposer, renderSend } from './InputToolbar';
+
 // import { CustomMessage } from '../components/CustomMessage';
 
 
@@ -73,10 +87,11 @@ export default function Chat({ navigation }) {
             headerTitleAlign: 'center',
             headerStyle: {
                 backgroundColor: colors.background,
-                borderBottomWidth: 1,
+                borderBottomWidth: 0.8,
                 borderBottomColor: 'white',
             },
-            headerTitle: `Chat ${userData ? `- ${userData?.username}` : ''}`,
+            headerTitle: `RateTalk - Chat`,
+            // headerTitle: `Chat ${userData ? `- ${userData?.username}` : ''}`,
             headerTintColor: 'white',
             headerTitleAlign: 'center'
         });
@@ -119,55 +134,76 @@ export default function Chat({ navigation }) {
 
 
     return (
-        isModalOpen ? (
-            <UserModal
-                id='modal_id'
-                isModalOpen={isModalOpen}
-                withInput
-                onRequestClose={() => setIsModalOpen(false)}
-                userData={userData}
-                userToSee={userToSee}
-            />
-        ) : (
-            messages.length > -1 ? ( //TODO: Explain -1
-                <GiftedChat
-                    messages={messages}
-                    showUserAvatar={true}
-                    onSend={messages => sendMessage(messages)}
-                    messagesContainerStyle={{
-                        backgroundColor: colors.backgroundDense,
-                    }}
-                    textInputStyle={{
-                        backgroundColor: 'rgba(0,0,0,0)',
-                        paddingHorizontal: 5,
-                        marginRight: 10
-                    }}
-                    user={{
-                        _id: auth?.currentUser?.uid,
-                        avatar: auth?.currentUser?.photoURL,
-                        username: userData?.username,
-                    }}
-                    isLoadingEarlier={true}
-                    onPressAvatar={(user) => {
-                        playSound();
-                        setIsModalOpen(true);
-                        setUserToSee(user);
-                        console.log('message', user)
-                    }}
-                    onLongPress={(context, message) => {
-                        console.log('User Info:', message.user);
-                    }}
-                    onPress={() => console.log('Message pressed')}
-                // renderUsernameOnMessage={true} TODO: Fix the username rendering
+        <View style={{ flex: 1 }}>
+            {isModalOpen ? (
+                <UserModal
+                    id='modal_id'
+                    isModalOpen={isModalOpen}
+                    withInput
+                    onRequestClose={() => setIsModalOpen(false)}
+                    userData={userData}
+                    userToSee={userToSee}
                 />
             ) : (
-                <View style={{ backgroundColor: colors.background, flex: 1, justifyContent: 'center' }}>
-                    <ActivityIndicator size={100} color="#ffffff" />
-                    <Text style={{ textAlign: 'center', fontWeight: '400', fontSize: 18, color: 'white', marginTop: 10 }}>
-                        Loading messages...
-                    </Text>
-                </View>
-            )
-        )
+                messages.length > 0 ? (
+                    <GiftedChat
+                        messages={messages}
+                        showUserAvatar={true}
+                        onSend={messages => {
+                            sendMessage(messages);
+                            playSound();
+                        }}
+                        messagesContainerStyle={{
+                            backgroundColor: colors.backgroundDense,
+                        }}
+                        textInputStyle={{
+                            backgroundColor: colors.inputBackground,
+                            marginRight: 10,
+                            textAlign: 'center',
+                            textAlignVertical: 'center',
+                            color: 'black',
+                        }}
+                        user={{
+                            _id: auth?.currentUser?.uid,
+                            avatar: auth?.currentUser?.photoURL,
+                            username: userData?.username,
+                        }}
+                        isLoadingEarlier={true}
+                        onPressAvatar={(user) => {
+                            setUserToSee(user);
+                            playSound();
+                            setIsModalOpen(true);
+                            console.log('message', user)
+                        }}
+                        onLongPress={(context, message) => {
+                            console.log('User Info:', message.user);
+                            //copiar mensaje al portapapeles abajo en react native
+                            Clipboard.setString(message.text);
+                            //enviar toast de mensaje copiado con react native
+                            ToastAndroid.show("Message copied", ToastAndroid.SHORT);
+                        }}
+                        onPress={(context) => { console.log('Message pressed'); }}
+                        // renderAvatar={renderAvatar}
+                        renderInputToolbar={renderInputToolbar}
+                        renderActions={renderActions}
+                        renderComposer={renderComposer}
+                        renderSend={renderSend}
+                        // renderBubble={renderBubble}
+                        // renderSystemMessage={renderSystemMessage}
+                        // renderMessage={renderMessage}
+                        // renderMessageText={renderMessageText}
+                        // renderCustomView={renderCustomView}
+
+                    />
+                ) : (
+                    <View style={{ backgroundColor: colors.backgroundDense, flex: 1, justifyContent: 'center' }}>
+                        <ActivityIndicator size={100} color="#ffffff" />
+                        <Text style={{ textAlign: 'center', fontWeight: '400', fontSize: 20, color: 'white', marginTop: 10 }}>
+                            Loading messages...
+                        </Text>
+                    </View>
+                )
+            )}
+        </View>
     );
 }

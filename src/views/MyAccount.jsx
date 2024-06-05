@@ -98,11 +98,12 @@ export const MyAccount = ({ navigation }) => {
         navigation.setOptions({
             headerStyle: {
                 backgroundColor: colors.background,
-                borderBottomWidth: 1,
+                borderBottomWidth: 0.5,
                 borderBottomColor: 'white',
             },
             headerTintColor: 'white',
             headerTitleAlign: 'center',
+            headerTitle: `RateTalk - My Account`,
         });
         const fetchUserData = async () => {
             try {
@@ -127,13 +128,65 @@ export const MyAccount = ({ navigation }) => {
         <View style={styles.background}>
             <Text style={styles.text}>{userData?.username}</Text>
             <Image source={{ uri: imageState }} style={styles.image} />
-            <Button title="Update Profile Image" onPress={selectImage} />
+            {/* <TouchableOpacity title="Update Profile Image" onPress={selectImage}>
+                <Text style={styles.textButtonUpload}>Update Profile Image</Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity style={styles.button} onPress={selectImage}>
+                    <Text style={styles.buttonText}>Update Profile Image</Text>
+            </TouchableOpacity>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      button: {
+        width: 230,
+        height: 70,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#1E90FF', // Color de fondo azul oscuro
+        borderWidth: 2,
+        borderColor: '#4169E1', // Color del borde azul más claro
+        shadowColor: '#000000', // Color de la sombra
+        shadowOpacity: 0.5, // Opacidad de la sombra
+        shadowOffset: { width: 2, height: 2 }, // Desplazamiento de la sombra
+        shadowRadius: 5, // Radio de la sombra
+        elevation: 5, // Elevación para efecto de elevación en Android
+      },
+      buttonText: {
+        fontSize: 20, // Aumenta el tamaño del texto
+        fontWeight: 'bold',
+        color: '#ffffff',
+        letterSpacing: 1, // Aumenta el espacio entre letras para un diseño más elegante
+      },
 
+
+    // textButtonUpload: {
+    //     color: 'white',
+    //     fontSize: 25,
+    //     fontWeight: '900',
+    //     backgroundColor: 'rgb(20, 60, 220)',
+    //     padding: 1,
+    //     borderRadius: 50,
+    //     borderBottomWidth: 1,
+    //     borderLeftWidth: 0.5,
+    //     borderRightWidth: 0.5,
+    //     borderTopWidth: 1,
+    //     borderColor: 'white',
+    //     textAlignVertical: 'center',
+    //     textAlign: 'center',
+    //     width: 280,
+    //     height: 80,
+    //     // Definir el degradado
+    //     // backgroundColor: 'transparent',
+    //     // backgroundImage: 'linear-gradient(45deg, rgb(20, 60, 220), rgb(120, 30, 220))',
+    // },
     background: {
         flex: 1,
         backgroundColor: colors.background,
@@ -152,10 +205,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     image: {
-        width: 200,
-        height: 200,
-        borderRadius: 5,
-        borderWidth: 1,
+        width: 250,
+        height: 250,
+        borderRadius: 500,
+        borderWidth: 0.5,
         borderColor: 'white',
         margin: 50
     }
