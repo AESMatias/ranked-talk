@@ -10,7 +10,9 @@ import Login from './src/views/Login.jsx';
 import Register from './src/views/Register.jsx';
 import Chat from './src/views/Chat.jsx';
 import Home from './src/views/Home.jsx';
+import ImagesToPDF from './src/views/ImagesToPDF.jsx';
 import { MyAccount } from './src/views/MyAccount.jsx';
+import { Estimates } from './src/views/Estimates.jsx';
 import DrawerGroup from './src/views/Drawer.jsx';
 import { setUser } from './src/store/slices/AccountSlice.jsx'
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,6 +45,8 @@ function ChatStack() {
       <Stack.Screen name='Home' component={Home} />
       <Stack.Screen name='Chat' component={Chat} />
       <Stack.Screen name='My Account' component={MyAccount} />
+      <Stack.Screen name='PDF' component={ImagesToPDF} />
+      <Stack.Screen name='Estimates' component={Estimates} />
     </Stack.Navigator>
   );
 }

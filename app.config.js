@@ -2,9 +2,9 @@ import 'dotenv/config';
 
 export default {
   "expo": {
-    "name": "Rate Talk App",
+    "name": "Rate Talk",
     "slug": "rate-talk-app",
-    "version": "1.0.0",
+    "version": "1.3.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -21,7 +21,7 @@ export default {
     },
     "android": {
       "bundleIdentifier": "com.aesmatias.rateralkapp",
-      "versionCode": 2,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#102339"
@@ -38,7 +38,7 @@ export default {
     "scheme": "com.aesmatias.ratetalkapp",
     "plugins": [
       "expo-font", // Agrega "expo-font" a la lista de plugins
-      "expo-router"
+      "expo-router",
     ],
     "environmentVars": {
       // "apiKey": process.env.API_KEY,

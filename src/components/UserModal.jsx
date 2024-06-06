@@ -7,18 +7,25 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { colors } from '../../generalColors.js';
 import { playSound } from '../utils/tapSound.jsx';
+import { ToastAndroid } from 'react-native';
 
 
 export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...props }) => {
 
     const { onRequestClose } = props;
+
     const handleCloseButton = () => {
-        playSound();
         onRequestClose();
     }
 
-    const content = withInput ? (
+    const handleAddFriend = () => {
+        onRequestClose();
+        ToastAndroid.show(`Request send to ${userToSee.username}`, ToastAndroid.SHORT);
 
+    }
+
+    const content = withInput ? (
+        <View style={styles.modalContent}>
         < KeyboardAvoidingView behavior='height' style={styles.modalContent} >
             {children}
 
@@ -27,20 +34,36 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
             </Text >
             <Image source={{ uri: userToSee.avatar }} style={styles.profileImage} />
 
-
-            <TouchableOpacity onPress={handleCloseButton}
-                style={styles.button}>
-                <Text style={styles.button_text}>
-                    <FontAwesome name="close" size={20} color="white" />
+            <TouchableOpacity onPress={handleAddFriend}
+                style={styles.buttonAddFriend}>
+                <Text
+                style={{textAlign:'center',
+                color: 'white',
+                fontSize: 15,
+                textAlignVertical: 'center',
+                padding: 10,
+                fontWeight: 'bold',
+                alignSelf: 'center'
+}}>
+                    Add {userToSee.username} as friend
                 </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={handleCloseButton}
+                style={styles.button_close}>
+                <Text style={styles.button_text}>
+                    <FontAwesome name="close" size={30} color="white" />
+                </Text>
+            </TouchableOpacity>
+
         </KeyboardAvoidingView >
+        </View>
     ) : (
         <View style={styles.modalContent}>
 
             {children}
             <Text style={styles.text}>
-                MODAL WITH CONTENT IN THE MODAL!
+                Error, please try again later (Modal without content!)
             </Text>
         </View>
     );
@@ -49,7 +72,9 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
         <RNModal
             visible={isModalOpen}
             transparent
-            animationType='fade'
+            style={{backgroundColor: 'rgba(0,0,0,0.5)',
+            }}
+            animationType='slide'
             statusBarTranslucent
             {...props}
         >
@@ -60,13 +85,14 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
 
 const styles = StyleSheet.create({
     profileImage: {
-        width: 280,
-        height: 280,
-        borderRadius: 5,
-        borderWidth: 1,
+        
+        width: 250,
+        height: 250,
+        borderRadius: 50,
+        borderWidth: 0.4,
         borderColor: 'white',
         alignSelf: 'center',
-        marginVertical: 30,
+        marginVertical: 60,
         //hacemos un fit 
         resizeMode: 'contain'
     },
@@ -74,38 +100,54 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignSelf: 'center',
-        justifyContent: 'center',
+        justifyContent: 'end',
         alignItems: 'stretch',
-        backgroundColor: colors.background,
+        backgroundColor: colors.backgroundDense,
         borderRadius: 0,
-        paddingVertical: 200,
         width: '100%',
         marginTop: 90,
 
     },
     text: {
         color: 'white',
-        fontSize: 40,
+        fontSize: 30,
         fontWeight: 'bold',
         justifyContent: 'center',
         alignSelf: 'center',
     },
-    button: {
-        backgroundColor: 'rgba(220,40,50,1)',
+    button_close: {
+        backgroundColor: 'rgba(250,10,20,0.6)',
         padding: 10,
         borderColor: 'white',
-        borderRadius: 15,
-        borderWidth: 0.5,
+        borderRadius: 500,
+        borderWidth: 0,
         marginTop: 10,
-        width: '80%',
-        maxWidth: 1000,
-        marginTop: 70,
-        alignSelf: 'center',
+        width: '15%',
+        height: 60,
+        maxWidth: 60,
+        marginTop: 50,
+        marginRight: 25,
+        alignSelf: 'flex-end',
     },
     button_text: {
-        fontSize: 16,
+        fontSize: 20,
         color: 'white',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        padding: 6,
         fontWeight: 'bold',
         alignSelf: 'center',
-    }
+    },
+    buttonAddFriend: {
+        backgroundColor: 'rgba(30,220,90,0.99)',
+        padding: 6,
+        borderColor: 'black',
+        borderRadius: 10,
+        borderWidth: 0.5,
+        marginTop: 40,
+        width: '70%',
+        height: 50,
+        maxWidth: 1000,
+        alignSelf: 'center',
+    },
 });
