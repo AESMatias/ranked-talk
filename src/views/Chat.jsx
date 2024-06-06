@@ -158,7 +158,7 @@ export default function Chat({ navigation }) {
                         showUserAvatar={true}
                         onSend={messages => {
                             sendMessage(messages);
-                            playSound();
+                            // playSound();
                         }}
                         messagesContainerStyle={{
                             backgroundColor: colors.backgroundDense,
@@ -178,7 +178,7 @@ export default function Chat({ navigation }) {
                         isLoadingEarlier={true}
                         onPressAvatar={(user) => {
                             setUserToSee(user);
-                            playSound();
+                            // playSound();
                             setIsModalOpen(true);
                             console.log('message', user)
                         }}

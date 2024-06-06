@@ -9,6 +9,11 @@ import { signOut } from 'firebase/auth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import HeaderBackground from '../components/HeaderBackground';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { Share } from 'react-native';
+import { Linking } from 'react-native';
+import { playSound } from '../utils/tapSound.jsx';
+import {LinearGradient} from 'expo-linear-gradient';
 
 const Home = ({ ...props }) => {
 
@@ -18,6 +23,48 @@ const Home = ({ ...props }) => {
         signOut(auth).catch(error => console.log('Error at logging out: ', error));
     };
 
+    
+        const URL = 'https://play.google.com/store/apps/details?id=com.aesmatias.ratetalkapp'
+    
+        const onShare = async () => {
+    
+
+            playSound();
+    
+            try {
+                const result = await Share.share({
+                    message:
+                        `Rate Talk App! Try it now on the Play Store! ${URL}`,
+                });
+                if (result.action === Share.sharedAction) {
+                    if (result.activityType) {
+                        // shared with activity type of result.activityType
+                    } else {
+                        // shared
+                    }
+                } else if (result.action === Share.dismissedAction) {
+                    // dismissed
+                }
+            } catch (error) {
+                Alert.alert(error.message);
+            }
+        };
+    
+        const openPlayStoreForRating = async () => {
+            playSound();
+
+    
+            const packageName = 'com.aesmatias.ratetalkapp';
+            const playStoreUrl = `market://details?id=${packageName}`;
+    
+            try {
+                await Linking.openURL(playStoreUrl);
+            } catch (error) {
+                console.error('Error at opening the application on Play Store:', error);
+            }
+        };
+
+    
     useEffect(() => {
         navigation.setOptions({
             headerStyle: {
@@ -41,16 +88,17 @@ const Home = ({ ...props }) => {
                 >
                     <MaterialCommunityIcons name="exit-to-app" size={30} color='white' />
                 </TouchableOpacity>
-            ),
-            headerLeft: () => (
-                <FontAwesome5 name="home" size={20} color='white' style={{ marginLeft: 20 }} />
-            ),
+            )
         });
     }, [navigation]);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.containerHome}>
+        <LinearGradient
+        colors={['hsl(210, 100%, 5%)', 'hsl(210, 60%, 70%)', 'hsl(210, 100%, 10%)']}
+        style={styles.containerHome}
+      >
+        <View >
+            <View style={styles.welcomeContainer}>
                 <Text style={styles.welcomeText}>
                     {`Welcome to Ranked Talk!`}
                 </Text>
@@ -68,13 +116,13 @@ const Home = ({ ...props }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("Estimates")}
+                    onPress={() => navigation.navigate("LocationsPUCSJ")}
                     style={styles.menuButton} >
-                    <Entypo name="menu" size={30} color={colors.lightGray} />
+                    <FontAwesome6 name="map" size={30} color={colors.lightGray} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("PDF")}
+                    onPress={() => openPlayStoreForRating()}
                     style={styles.menuButton} >
                     <Entypo name="star" size={30} color={colors.lightGray} />
                 </TouchableOpacity>
@@ -88,26 +136,37 @@ const Home = ({ ...props }) => {
             </View>
 
         </View>
+        </LinearGradient>
     );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
+    welcomeContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '45%',
+        marginBottom: 0,
+    },
     buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
         paddingHorizontal: 20,
-        position: 'absolute',
         bottom: 0,
+        marginTop: '40%',
     },
     welcomeText:
     {
+        
         color: 'white',
-        fontSize: 25,
+        fontSize: 30,
         textAlign: 'center',
-        fontWeight: '800',
+        fontWeight: '900',
+        textShadowColor: 'rgba(0,0,0,1)', // Colour of the shadow
+        textShadowOffset: { width: 1, height: 1 }, // Shadow offset
+        textShadowRadius: 10, // Radius of the shadow
     },
     containerHome: {
         flex: 1,

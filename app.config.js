@@ -20,7 +20,7 @@ export default {
       "supportsTablet": true
     },
     "android": {
-      "bundleIdentifier": "com.aesmatias.rateralkapp",
+      "bundleIdentifier": "com.aesmatias.ratetalkapp",
       "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
+
 export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...props }) => {
     const navigation = useNavigation();
 
@@ -26,13 +27,14 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
 
     const handleAddFriend = () => {
         onRequestClose();
+        playSound();
         ToastAndroid.show(`Request send to ${userToSee.username}`, ToastAndroid.SHORT);
-
     }
 
 
     const handleSendMessage = () => {
         onRequestClose();
+        playSound();
         ToastAndroid.show(`Message request send to ${userToSee.username}`, ToastAndroid.SHORT);
 
     }
