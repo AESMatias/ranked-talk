@@ -4,7 +4,7 @@ export default {
   "expo": {
     "name": "Rate Talk",
     "slug": "rate-talk-app",
-    "version": "1.3.0",
+    "version": "1.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -21,7 +21,7 @@ export default {
     },
     "android": {
       "bundleIdentifier": "com.aesmatias.rateralkapp",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#102339"

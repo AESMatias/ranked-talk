@@ -43,6 +43,7 @@ export const CheckAuthStorage = async () => {
         const formattedUser = await JSON.parse(userData);
 
         if (formattedUser !== null) {
+            console.alert('User already logged in');
             return formattedUser;
         }
     } catch (error) {

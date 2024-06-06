@@ -13,7 +13,6 @@ import Home from './src/views/Home.jsx';
 import ImagesToPDF from './src/views/ImagesToPDF.jsx';
 import { MyAccount } from './src/views/MyAccount.jsx';
 import { Estimates } from './src/views/Estimates.jsx';
-import DrawerGroup from './src/views/Drawer.jsx';
 import { setUser } from './src/store/slices/AccountSlice.jsx'
 import { useDispatch, useSelector } from 'react-redux';
 

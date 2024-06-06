@@ -8,6 +8,7 @@ import { auth } from '../../firebaseConfig.js';
 import { signOut } from 'firebase/auth';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import HeaderBackground from '../components/HeaderBackground';
 
 const Home = ({ ...props }) => {
 
@@ -20,13 +21,17 @@ const Home = ({ ...props }) => {
     useEffect(() => {
         navigation.setOptions({
             headerStyle: {
-                backgroundColor: colors.primary,
+                backgroundColor: colors.primary,//
                 borderBottomWidth: 1,
                 borderBottomColor: 'white',
             },
+            headerBackground: () => <HeaderBackground />,
             headerTintColor: 'white',
             headerTitleAlign: 'center',
             headerTitle: `RateTalk - Home`,
+            headerTitleStyle: {
+                fontWeight: 'bold', // Agrega negrita al título
+              },
             headerRight: () => (
                 <TouchableOpacity
                     style={{

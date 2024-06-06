@@ -6,8 +6,9 @@ import { Avatar, Bubble, SystemMessage, Message, MessageText } from 'react-nativ
 export const renderAvatar = (props) => (
   <Avatar
     {...props}
-    containerStyle={{ left: { borderWidth: 1, borderColor: 'white' }, right: {} }}
-    imageStyle={{ left: { borderWidth: 1, borderColor: 'red' }, right: {} }}
+    containerStyle={{ left: { borderWidth: 0, borderColor: 'white' }, right: {} }}
+    imageStyle={{ left: { borderWidth: 0.5, borderColor: 'white' },
+     right: {borderColor:'white',borderWidth:0.5} }}
   />
 );
 

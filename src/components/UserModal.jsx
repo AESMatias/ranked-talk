@@ -8,9 +8,15 @@ import { FontAwesome } from '@expo/vector-icons';
 import { colors } from '../../generalColors.js';
 import { playSound } from '../utils/tapSound.jsx';
 import { ToastAndroid } from 'react-native';
-
+import {LinearGradient} from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...props }) => {
+    const navigation = useNavigation();
+
+
 
     const { onRequestClose } = props;
 
@@ -24,6 +30,13 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
 
     }
 
+
+    const handleSendMessage = () => {
+        onRequestClose();
+        ToastAndroid.show(`Message request send to ${userToSee.username}`, ToastAndroid.SHORT);
+
+    }
+
     const content = withInput ? (
         <View style={styles.modalContent}>
         < KeyboardAvoidingView behavior='height' style={styles.modalContent} >
@@ -34,26 +47,44 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
             </Text >
             <Image source={{ uri: userToSee.avatar }} style={styles.profileImage} />
 
-            <TouchableOpacity onPress={handleAddFriend}
-                style={styles.buttonAddFriend}>
-                <Text
-                style={{textAlign:'center',
-                color: 'white',
-                fontSize: 15,
-                textAlignVertical: 'center',
-                padding: 10,
-                fontWeight: 'bold',
-                alignSelf: 'center'
-}}>
-                    Add {userToSee.username} as friend
-                </Text>
-            </TouchableOpacity>
+<TouchableOpacity onPress={handleAddFriend}>
+    <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 2 }}
+        colors={['hsl(120, 80%, 50%)', 'hsl(120, 100%, 15%)']}
+        style={styles.buttonAddFriend}
+    >
+        <Text style={styles.buttonText}>
+            Add {userToSee.username} as friend
+        </Text>
+    </LinearGradient>
+</TouchableOpacity>
 
-            <TouchableOpacity onPress={handleCloseButton}
-                style={styles.button_close}>
-                <Text style={styles.button_text}>
+
+<TouchableOpacity onPress={handleSendMessage}>
+    <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 2 }}
+        colors={['hsl(25, 100%, 50%)', 'hsl(45, 90%, 50%)']}
+        style={styles.buttonSendMessage}
+    >
+        <Text style={styles.buttonText}>
+            Private Message
+        </Text>
+    </LinearGradient>
+</TouchableOpacity>
+
+            <TouchableOpacity onPress={handleCloseButton}>
+                        <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 2 }}
+        colors={['hsl(0, 100%, 50%)', 'hsl(360, 100%, 0%)']}
+        style={styles.button_close}
+    >
+                <Text style={styles.buttonTextClose}>
                     <FontAwesome name="close" size={30} color="white" />
                 </Text>
+            </LinearGradient>
             </TouchableOpacity>
 
         </KeyboardAvoidingView >
@@ -78,14 +109,31 @@ export const UserModal = ({ isModalOpen, withInput, userToSee, children, ...prop
             statusBarTranslucent
             {...props}
         >
-            {content}
+      <LinearGradient
+        colors={['hsl(220,90%,15%)', 'rgba(10,10,10,1)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 0.15 }}
+        style={{ flex: 1 }}
+      >
+        <View style={{ flex: 1 }}>{content}</View>
+      </LinearGradient>
         </RNModal>
     );
 }
 
 const styles = StyleSheet.create({
+    buttonSendMessage: {
+        padding: 3,
+        borderColor: 'black',
+        borderRadius: 20,
+        borderWidth: 1,
+        marginTop: 12,
+        width: '70%',
+        height: 50,
+        maxWidth: 1000,
+        alignSelf: 'center',
+    },
     profileImage: {
-        
         width: 250,
         height: 250,
         borderRadius: 50,
@@ -114,37 +162,48 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         justifyContent: 'center',
         alignSelf: 'center',
+        
     },
+    
     button_close: {
-        backgroundColor: 'rgba(250,10,20,0.6)',
         padding: 10,
         borderColor: 'white',
         borderRadius: 500,
         borderWidth: 0,
-        marginTop: 10,
         width: '15%',
         height: 60,
         maxWidth: 60,
-        marginTop: 50,
-        marginRight: 25,
+        marginTop: 25,
+        marginRight: 50,
         alignSelf: 'flex-end',
     },
-    button_text: {
+    buttonText: {
         fontSize: 20,
         color: 'white',
         textAlign: 'center',
         textAlignVertical: 'center',
-        padding: 6,
+        padding: 10,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        textShadowColor: 'black', // Color del borde
+        textShadowOffset: { width: 0.5, height: 0.5 }, // Desplazamiento del borde
+        textShadowRadius: 0.1, // Radio del borde
+    },
+    buttonTextClose : {
+        fontSize: 20,
+        color: 'white',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        padding: 7,
         fontWeight: 'bold',
         alignSelf: 'center',
     },
     buttonAddFriend: {
-        backgroundColor: 'rgba(30,220,90,0.99)',
-        padding: 6,
+        padding: 3,
         borderColor: 'black',
-        borderRadius: 10,
-        borderWidth: 0.5,
-        marginTop: 40,
+        borderRadius: 20,
+        borderWidth: 1,
+        marginTop: 5,
         width: '70%',
         height: 50,
         maxWidth: 1000,

@@ -34,6 +34,9 @@ import {
   } from './MessageContainer.jsx';
 
   import { renderInputToolbar, renderActions, renderComposer, renderSend } from './InputToolbar';
+import HeaderBackground from '../components/HeaderBackground';
+import BackgroundGradient from '../components/BackgroundGradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // import { CustomMessage } from '../components/CustomMessage';
 
@@ -85,15 +88,19 @@ export default function Chat({ navigation }) {
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitleAlign: 'center',
+            headerBackground: () => <HeaderBackground />,
             headerStyle: {
-                backgroundColor: colors.background,
+                backgroundColor: colors.background, // Not in use
                 borderBottomWidth: 0.8,
                 borderBottomColor: 'white',
             },
             headerTitle: `RateTalk - Chat`,
             // headerTitle: `Chat ${userData ? `- ${userData?.username}` : ''}`,
             headerTintColor: 'white',
-            headerTitleAlign: 'center'
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold', // Agrega negrita al título
+              },
         });
 
     }, [navigation]);
@@ -183,7 +190,7 @@ export default function Chat({ navigation }) {
                             ToastAndroid.show("Message copied", ToastAndroid.SHORT);
                         }}
                         onPress={(context) => { console.log('Message pressed'); }}
-                        // renderAvatar={renderAvatar}
+                        renderAvatar={renderAvatar}
                         renderInputToolbar={renderInputToolbar}
                         renderActions={renderActions}
                         renderComposer={renderComposer}
@@ -197,10 +204,21 @@ export default function Chat({ navigation }) {
                     />
                 ) : (
                     <View style={{ backgroundColor: colors.backgroundDense, flex: 1, justifyContent: 'center' }}>
-                        <ActivityIndicator size={100} color="#ffffff" />
-                        <Text style={{ textAlign: 'center', fontWeight: '400', fontSize: 20, color: 'white', marginTop: 10 }}>
-                            Loading messages...
-                        </Text>
+      <LinearGradient
+        colors={['#0073e6', '#001206']}
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
+      >
+        <ActivityIndicator
+          size={70}
+          color={'hsl(180, 90%, 70%)'}
+          renderToHardwareTextureAndroid
+          style={{ transform: [{ scale: 1 }] }}
+        />
+        <Text style={{ textAlign: 'center', fontWeight: '900',
+         fontSize: 20, color: 'white', marginTop: 40 }}>
+          Loading messages...
+        </Text>
+      </LinearGradient>
                     </View>
                 )
             )}
